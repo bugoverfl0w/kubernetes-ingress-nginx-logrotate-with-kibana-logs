@@ -1,0 +1,29 @@
+apiVersion: v1
+data:
+  filebeat.yml: |-
+    filebeat.config:
+      modules:
+        path: /usr/share/filebeat/modules.d/*.yml
+        reload:
+          enabled: true
+
+    filebeat.prospectors:
+      - type: log
+        enabled: true
+        paths:
+         - /var/log/nginx/*.log
+        fields:
+          domain: ingress.logs
+
+    output:
+      redis:
+        hosts: ["your-redis-host"]
+        password: "redis-password"
+        key: "redis-key-kibana"
+        db: 0
+        timeout: 5
+        worker: 2
+kind: ConfigMap
+metadata:
+  name: ingress-configmap
+  namespace: ingress-nginx
